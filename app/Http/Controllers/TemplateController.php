@@ -85,4 +85,11 @@ class TemplateController extends Controller
     public function category(){
         return view("admin.addcategory");
     }
+
+    public function ckeckout_verify(){
+        $userId = Session::get("cid");
+        $productData = client::select('email')->where("id",$userId)->first();
+
+
+    }
 }

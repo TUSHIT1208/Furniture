@@ -26,8 +26,8 @@
                     <a href="{{ route('client.index') }}" class="nav_link"> <i class='bx bx-user nav_icon'></i> <span class="nav_name">Users</span> </a> 
                     <a href="{{ route('product.create') }}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">New Products</span> </a> 
                     <a href="{{ route('category.create') }}" class="nav_link"> <i class='bx bx-bookmark nav_icon'></i> <span class="nav_name">Add New Category</span> </a> 
-                    <a href="{{ route('product.index') }}" class="nav_link"> <i class='bx bx-folder nav_icon'></i> <span class="nav_name">Files</span> </a> 
-                    <a href="#" class="nav_link"> <i class='bx bx-bar-chart-alt-2 nav_icon'></i> <span class="nav_name">Stats</span> </a> 
+                    <a href="{{ route('product.index') }}" class="nav_link"> <i class='bx bx-folder nav_icon'></i> <span class="nav_name">Products</span> </a> 
+                    <a href="{{ route('placeorder.index') }}" class="nav_link"> <i class='bx bx-bar-chart-alt-2 nav_icon'></i> <span class="nav_name">Order List</span> </a> 
                 </div>
             </div> <a href="/login" class="nav_link" onclick="return confirm('Are Sure Want To Leave This Page')"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
         </nav>
@@ -39,6 +39,7 @@
         @yield('addcategory')
         @yield('user')
         @yield('show_client')
+        @yield('order')
         @yield('scripts')
         @yield('styles')
     </div>

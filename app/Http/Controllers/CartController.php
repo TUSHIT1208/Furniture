@@ -60,9 +60,8 @@ class CartController extends Controller
             }
             return view('cart', ['cartData' => null, 'productData' => []]);
         } else {
-            
-            return redirect('/login')->with('errorWishlist', 'Login and Check your wishlist products.');
-        }
+            return redirect('/login')->with('errorWishlist', 'Login and Check your Cart products.');
+        } 
     }
 
 
@@ -120,9 +119,16 @@ class CartController extends Controller
     }
 
     
-    public function update(Request $request, cart $cart,string $id)
+    public function update(Request $request,string $id)
     {
-        //
+        $cart_id = cart::find($request->cartId);
+        $product = product::find($id);
+  
+        $cart_id->qty = $request->quantity;
+        $cart_id->total_amount = $product->price * $request->quantity;
+        $cart_id->save();
+
+        return redirect()->route('addcart.index');
     }
 
 

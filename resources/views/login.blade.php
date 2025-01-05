@@ -192,7 +192,7 @@
 				</ul>
 				<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 					<li><a class="nav-link" href="/login"><img src="{{ asset('images/user.svg') }}"></a></li>
-					<li><a class="nav-link" href="/cart"><img src="{{ asset('images/cart.svg') }}"></a></li>
+					<li><a class="nav-link" href="{{ route('addcart.index') }}"><img src="{{ asset('images/cart.svg') }}"></a></li>
 					<li><a style="color: white; font-size: 150%; position: relative; left: 130%; top: 23%;" href="{{ route('addwishlist.index') }}"><i class="far fa-heart"></i></a></li>
 				</ul>
 			</div>

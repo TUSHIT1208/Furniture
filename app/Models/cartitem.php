@@ -19,4 +19,8 @@ class cartitem extends Model
     public function products(){
         return $this->belongsTo(product::class);
     }
+
+    public function order(){
+        return $this->hasMany(order::class);
+    }
 }

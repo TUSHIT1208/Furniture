@@ -34,7 +34,6 @@
           </tr>
         </thead>
         <tbody>
-          <form id="cart-form" action="/update_final_amount/" method="POST">
           @foreach ($productData as $data)
           <tr class="cart-item animate-slide-up">
             <td class="product-name">{{ $data->name }}</td>
@@ -45,8 +44,17 @@
             <td>
               <div class="quantity-controls animate-bounce-in">
                 <button type="button" class="decrease btn btn-outline-secondary" data-id="{{ $data->id }}">-</button>
-                <input type="number" class="quantity-amount" name="quantity[{{ $data->id }}]" value="{{ $cartData[$data->id]->qty ?? 1 }}" min="1" style="background: transparent; border: none; text-align: center; outline: none;">
-                <button type="button" class="increase btn btn-outline-secondary" data-id="{{ $data->id }}">+</button>
+                @foreach ($cartData as $quantity)
+                  <input type="number" class="quantity-amount" value="{{ $quantity->qty }}" style="background: transparent; border: none; text-align: center; outline: none;">
+                @endforeach
+                <form action="/update_price_quantity/{{ $data->id }}" method="POST">
+                  @csrf
+                  @foreach ($cartData as $quantity)
+                    <input type="hidden" name="quantity" value="{{ $quantity->qty + 1 }}">
+                    <input type="hidden" name="cartId" value="{{ $quantity->id }}">
+                  @endforeach
+                  <button type="submit" class="increase btn btn-outline-secondary" style="position: relative; left: 30%; bottom: 31px;">+</button>
+                </form>                
               </div>
             </td>
             <td class="total-price">${{ $data->price * ($cartData[$data->id]->qty ?? 1) }}</td>
@@ -58,90 +66,57 @@
             </td>
           </tr>
           @endforeach
-        </form>
         </tbody>
       </table>
     </div>
-
+  @php
+    $cartId = $cartData->pluck('id');
+  @endphp
   <!-- Cart Footer Section -->
   <div class="cart-footer d-flex justify-content-between animate-slide-from-bottom">
     <a href="/shop" class="btn btn-outline-primary btn-continue animate-bounce-in">Continue Shopping</a>
     <span class="cart-subtotal" id="cart-subtotal">Subtotal: $0.00</span> 
-      <a href="/checkout" class="btn btn-primary btn-cart animate-zoom-in">Proceed To Checkout</a>
+    <a href="/checkout" class="btn btn-primary btn-cart animate-zoom-in">Proceed To Checkout</a>
   </div>
 </div>
 @endif
 
 <!-- JavaScript for Real-Time Cart Updates -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const updateCartTotal = () => {
-      let subtotal = 0;
-      document.querySelectorAll('tbody tr').forEach(row => {
-        const price = parseFloat(row.querySelector('.product-price').getAttribute('data-price'));
-        const quantity = parseInt(row.querySelector('.quantity-amount').value);
-        const total = price * quantity;
-        row.querySelector('.total-price').textContent = `$${total.toFixed(2)}`;
-        subtotal += total;
-      });
-
-      // Update the Subtotal in the cart footer
-      document.querySelector('#cart-subtotal').textContent = `Subtotal: $${subtotal.toFixed(2)}`;
-    };
-
-    document.querySelectorAll('.quantity-amount').forEach(input => {
-      input.addEventListener('change', (e) => {
-        if (e.target.value < 1) e.target.value = 1;
-        updateCartTotal();
-        updateCart(e.target);  // Update the backend cart after changing quantity
-      });
+  document.addEventListener('DOMContentLoaded', function () {
+  const updateCartTotal = () => {
+    let subtotal = 0;
+    document.querySelectorAll('tbody tr').forEach(row => {
+      const price = parseFloat(row.querySelector('.product-price').getAttribute('data-price'));
+      const quantity = parseInt(row.querySelector('.quantity-amount').value);
+      const total = price * quantity;
+      row.querySelector('.total-price').textContent = `$${total.toFixed(2)}`;
+      subtotal += total;
     });
 
-    document.querySelectorAll('.increase').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const input = btn.closest('.quantity-controls').querySelector('.quantity-amount');
-        input.value = parseInt(input.value) + 1;
-        input.dispatchEvent(new Event('change'));
-      });
+    // Update the Subtotal in the cart footer
+    document.querySelector('#cart-subtotal').textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+  };
+
+  document.querySelectorAll('tbody tr').forEach(row => {
+    const increaseBtn = row.querySelector('.increase');
+    const decreaseBtn = row.querySelector('.decrease');
+
+    // Handle "+" button click
+    increaseBtn.addEventListener('click', () => {
+      quantityInput.value = parseInt(quantityInput.value) + 1;
+      quantityInput.dispatchEvent(new Event('change')); // Trigger change event to update totals
     });
 
-    document.querySelectorAll('.decrease').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const input = btn.closest('.quantity-controls').querySelector('.quantity-amount');
-        input.value = Math.max(1, parseInt(input.value) - 1);
-        input.dispatchEvent(new Event('change'));
-      });
+    // Handle "-" button click
+    decreaseBtn.addEventListener('click', () => {
+      quantityInput.value = Math.max(1, parseInt(quantityInput.value) - 1); // Prevent going below 1
+      quantityInput.dispatchEvent(new Event('change')); // Trigger change event to update totals
     });
-
-    // AJAX update cart
-    function updateCart(input) {
-      const productId = input.name.split('[')[1].split(']')[0]; // Extract product id from name attribute
-      const quantity = input.value;
-
-      fetch(`/cart/update/${productId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ quantity: quantity })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          updateCartTotal();
-        } else {
-          alert('Something went wrong while updating the cart!');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-
-    // Initial total calculation on page load
-    updateCartTotal();
   });
+
+  updateCartTotal();
+});
 </script>
 
 @endsection

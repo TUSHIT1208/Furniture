@@ -1,5 +1,16 @@
 @extends('Template.master')
 @section('checkout')
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+	<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+	<script>
+		AOS.init({
+			duration: 1000, // Animation duration in milliseconds
+			offset: 100,    // Trigger animation 100px before the element is visible
+		});
+	</script>	
+
 	<!-- Start Hero Section -->
 	<div class="hero">
 		<div class="container">
@@ -26,32 +37,40 @@
 		  </div>
 		</div>
 	  </div>
-	  <div class="row">
+	<div class="row">
+		<form action="{{ route('placeorder.store') }}" method="POST">
+		@csrf
 		<div class="col-md-6 mb-5 mb-md-0">
 		  <h2 class="h3 mb-3 text-black">Billing Details</h2>
 		  <div class="p-3 p-lg-5 border bg-white">
 			<div class="form-group">
 			  <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
-			  <select id="c_country" class="form-control">
+			  <select id="c_country" class="form-control" name="country">
 				<option value="1">Select a country</option>    
-				<option value="2">bangladesh</option>    
-				<option value="3">Algeria</option>    
-				<option value="4">Afghanistan</option>    
-				<option value="5">Ghana</option>    
-				<option value="6">Albania</option>    
-				<option value="7">Bahrain</option>    
-				<option value="8">Colombia</option>    
-				<option value="9">Dominican Republic</option>    
+				<option value="India">India</option>    
+				<option value="Algeria">Algeria</option>    
+				<option value="Afghanistan">Afghanistan</option>    
+				<option value="Ghana">Ghana</option>      
 			  </select>
 			</div>
 			<div class="form-group row">
 			  <div class="col-md-6">
 				<label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_fname" name="c_fname">
+				<input type="text" class="form-control" id="c_fname" name="first_name">
+				<span>
+					@error('first_name')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			  <div class="col-md-6">
 				<label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_lname" name="c_lname">
+				<input type="text" class="form-control" id="c_lname" name="last_name">
+				<span>
+					@error('last_name')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			</div>
 
@@ -65,7 +84,12 @@
 			<div class="form-group row">
 			  <div class="col-md-12">
 				<label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_address" name="c_address" placeholder="Street address">
+				<input type="text" class="form-control" id="c_address" name="address" placeholder="Street address">
+				<span>
+					@error('address')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			</div>
 
@@ -76,22 +100,42 @@
 			<div class="form-group row">
 			  <div class="col-md-6">
 				<label for="c_state_country" class="text-black">State / Country <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_state_country" name="c_state_country">
+				<input type="text" class="form-control" id="c_state_country" name="state">
+				<span>
+					@error('state')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			  <div class="col-md-6">
 				<label for="c_postal_zip" class="text-black">Posta / Zip <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_postal_zip" name="c_postal_zip">
+				<input type="text" class="form-control" id="c_postal_zip" name="pincode">
+				<span>
+					@error('pincode')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			</div>
 
 			<div class="form-group row mb-5">
 			  <div class="col-md-6">
 				<label for="c_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_email_address" name="c_email_address">
+				<input type="text" class="form-control" id="c_email_address" name="email">
+				<span>
+					@error('email')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			  <div class="col-md-6">
 				<label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-				<input type="text" class="form-control" id="c_phone" name="c_phone" placeholder="Phone Number">
+				<input type="text" class="form-control" id="c_phone" name="phone" placeholder="Phone Number">
+				<span>
+					@error('phone')
+						<span class="text-danger">{{ $message }}</span>
+					@enderror
+				</span>
 			  </div>
 			</div>
 
@@ -186,16 +230,11 @@
 			  </div>
 			</div>
 
-			<div class="form-group">
-			  <label for="c_order_notes" class="text-black">Order Notes</label>
-			  <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="5" class="form-control" placeholder="Write your notes here..."></textarea>
-			</div>
-
 		  </div>
 		</div>
 		<div class="col-md-6">
 
-		  <div class="row mb-5">
+		  <div class="row mb-5" style="position: relative; left: 110%; bottom: 785px;">
 			<div class="col-md-12">
 			  <h2 class="h3 mb-3 text-black">Coupon Code</h2>
 			  <div class="p-3 p-lg-5 border bg-white">
@@ -212,35 +251,55 @@
 			</div>
 		  </div>
 
-		  <div class="row mb-5">
+		  <div class="row mb-5" style="position: relative; left: 110%; bottom: 785px;">
 			<div class="col-md-12">
 			  <h2 class="h3 mb-3 text-black">Your Order</h2>
 			  <div class="p-3 p-lg-5 border bg-white">
 				<table class="table site-block-order-table mb-5">
-				  <thead>
-					<th>Product</th>
-					<th>Total</th>
-				  </thead>
-				  <tbody>
-					<tr>
-					  <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-					  <td>$250.00</td>
-					</tr>
-					<tr>
-					  <td>Polo Shirt <strong class="mx-2">x</strong>   1</td>
-					  <td>$100.00</td>
-					</tr>
-					<tr>
-					  <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
-					  <td class="text-black">$350.00</td>
-					</tr>
-					<tr>
-					  <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-					  <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
-					</tr>
-				  </tbody>
-				</table>
-
+					<thead>
+						<th>Product</th>
+						<th>Total</th>
+					</thead>
+					<tbody>
+						@php
+							$subtotal = 0;
+							$totalQuantity = 0;
+						@endphp
+				
+						@foreach ($cartData as $cart)
+							@foreach ($cart->cartitem as $cartitem)
+								@php
+									$productImage = $productData->where('id', $cartitem->product_id)->first();
+									$subtotal += $cart->total_amount;
+									$totalQuantity += $cart->qty;
+								@endphp
+				
+								<tr data-aos="fade-up">
+									<td>
+										<img src="{{ asset('uploads/' . $productImage->images->pimg) }}" 
+											 class="product-image" 
+											 width="50" 
+											 height="50" 
+											 style="object-fit: contain;">
+										<strong class="mx-2">x</strong> 
+										{{ $cart->qty }}
+									</td>
+									<td>${{ $cart->total_amount }}</td>
+								</tr>
+							@endforeach
+						@endforeach
+					</tbody>
+					<tfoot>
+						<tr data-aos="fade-up">
+							<td><strong>Total Quantity</strong></td>
+							<td><strong>{{ $totalQuantity }}</strong></td>
+						</tr>
+						<tr data-aos="fade-up">
+							<td><strong>Subtotal</strong></td>
+							<td><strong>${{ number_format($subtotal, 2) }}</strong></td>
+						</tr>
+					</tfoot>
+				</table>																
 				<div class="border p-3 mb-3">
 				  <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Direct Bank Transfer</a></h3>
 
@@ -270,18 +329,22 @@
 					</div>
 				  </div>
 				</div>
-
 				<div class="form-group">
-				  <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='/thankyou'">Place Order</button>
-				</div>
-
+					@foreach ($cartData as $cart)
+						@foreach ($cart->cartitem as $cartitem)
+								<input type="hidden" name="cartIds[]" value="{{ $cartitem->id }}">
+							@endforeach
+						@endforeach
+					<button class="btn btn-black btn-lg py-3 btn-block">Place Order</button>
+				</form>
+				</div>				
 			  </div>
 			</div>
 		  </div>
 
 		</div>
 	  </div>
-	  <!-- </form> -->
+		</form>
 	</div>
   </div>
 @endsection
